@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import constructionHatLogo from '../assets/images/construction-hat-logo.svg';
 import './Navbar.css';
 
 const Navbar = () => {
@@ -16,7 +17,8 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="container navbar-container">
         <Link to="/" className="navbar-logo">
-          Construction Scheduler
+          <img src={constructionHatLogo} alt="Construction Hat" className="navbar-logo-image" />
+          <span>Construction Scheduler</span>
         </Link>
         <ul className="navbar-menu">
           {currentUser ? (
