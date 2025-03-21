@@ -26,17 +26,27 @@ export const useInactivityTimeout = (isAuthenticated, logout, navigate) => {
   
   // Reset timers - use useCallback to memoize this function
   const resetTimers = useCallback(() => {
-    console.log('Resetting inactivity timers');
+    console.log('Resetting inactivity timers - isAuthenticated:', isAuthenticated);
     
-    if (!isMountedRef.current || !isAuthenticated) return;
+    if (!isMountedRef.current) {
+      console.log('Component not mounted, skipping timer setup');
+      return;
+    }
+    
+    if (!isAuthenticated) {
+      console.log('User not authenticated, skipping timer setup');
+      return;
+    }
     
     // Clear existing timers
     if (inactivityTimerRef.current) {
+      console.log('Clearing existing inactivity timer');
       clearTimeout(inactivityTimerRef.current);
       inactivityTimerRef.current = null;
     }
     
     if (warningTimerRef.current) {
+      console.log('Clearing existing warning timer');
       clearTimeout(warningTimerRef.current);
       warningTimerRef.current = null;
     }
@@ -44,16 +54,26 @@ export const useInactivityTimeout = (isAuthenticated, logout, navigate) => {
     setShowWarning(false);
     
     // Set a new inactivity timer
+    console.log(`Setting inactivity timer for ${INACTIVITY_TIMEOUT/1000} seconds`);
     inactivityTimerRef.current = setTimeout(() => {
-      if (!isMountedRef.current) return;
+      if (!isMountedRef.current) {
+        console.log('Component unmounted during timeout, aborting');
+        return;
+      }
       
       console.log('Inactivity detected! Showing warning...');
       setShowWarning(true);
-      setWarningTime(Date.now() + WARNING_DURATION);
+      const expiryTime = Date.now() + WARNING_DURATION;
+      setWarningTime(expiryTime);
+      console.log(`Warning will expire at: ${new Date(expiryTime).toLocaleTimeString()}`);
       
       // Set warning timer for auto-logout
+      console.log(`Setting warning timer for ${WARNING_DURATION/1000} seconds`);
       warningTimerRef.current = setTimeout(() => {
-        if (!isMountedRef.current) return;
+        if (!isMountedRef.current) {
+          console.log('Component unmounted during warning, aborting');
+          return;
+        }
         
         console.log('Warning timeout expired! Logging out...');
         handleLogout();

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Login from './pages/Login';
@@ -16,15 +16,35 @@ import { useInactivityTimeout } from './services/timeout.service';
 function App() {
   const { loading, currentUser, logout } = useAuth();
   const navigate = useNavigate();
+  // State for manual testing of timeout warning
+  const [forceShowWarning, setForceShowWarning] = useState(false);
 
   // Only activate timeout for authenticated users
   const isAuthenticated = currentUser !== null;
   const {
-    showWarning,
+    showWarning: autoShowWarning,
     warningTime,
     continueSession,
     handleLogout
   } = useInactivityTimeout(isAuthenticated, logout, navigate);
+  
+  // Combine automatic warning with forced warning for testing
+  const showWarning = autoShowWarning || forceShowWarning;
+  
+  // Debug info
+  console.log('App render - isAuthenticated:', isAuthenticated, 'showWarning:', showWarning);
+  
+  // Function to manually show the warning dialog for testing
+  const showTestWarning = () => {
+    console.log('Manual test: Showing timeout warning');
+    setForceShowWarning(true);
+  };
+  
+  // Function to dismiss the test warning
+  const dismissTestWarning = () => {
+    console.log('Manual test: Dismissing timeout warning');
+    setForceShowWarning(false);
+  };
 
   if (loading) {
     return <div className="loading">Loading...</div>;
@@ -59,10 +79,34 @@ function App() {
       {currentUser && (
         <TimeoutWarning 
           show={showWarning}
-          warningTime={warningTime}
-          onContinue={continueSession}
+          warningTime={warningTime || (Date.now() + 60000)} // Fallback for manual testing
+          onContinue={forceShowWarning ? dismissTestWarning : continueSession}
           onTimeout={handleLogout}
         />
+      )}
+      
+      {/* Debug testing button - only shown when logged in */}
+      {currentUser && (
+        <div style={{ 
+          position: 'fixed', 
+          bottom: '20px', 
+          right: '20px', 
+          zIndex: 1000 
+        }}>
+          <button 
+            onClick={showTestWarning}
+            style={{
+              padding: '10px 15px',
+              backgroundColor: '#333',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Test Timeout Dialog
+          </button>
+        </div>
       )}
     </div>
   );
