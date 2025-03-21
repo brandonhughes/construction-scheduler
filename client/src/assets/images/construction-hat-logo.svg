@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-  <!-- Construction Hat Logo -->
-  <!-- Red color from Kraus Anderson: #c6202e -->
+  <!-- Construction Hat Logo in Black and White -->
   
   <!-- Hat Base -->
-  <ellipse cx="50" cy="70" rx="40" ry="10" fill="#3a3a3a" />
+  <ellipse cx="50" cy="70" rx="40" ry="10" fill="#222222" />
   
   <!-- Hat Dome -->
-  <path d="M50 20 C20 20, 15 60, 15 65 C30 65, 70 65, 85 65 C85 60, 80 20, 50 20" fill="#c6202e" />
+  <path d="M50 20 C20 20, 15 60, 15 65 C30 65, 70 65, 85 65 C85 60, 80 20, 50 20" fill="white" />
   
   <!-- Hat Brim -->
-  <path d="M15 65 C15 68, 15 70, 15 70 C30 75, 70 75, 85 70 C85 70, 85 68, 85 65 C70 70, 30 70, 15 65" fill="#3a3a3a" />
+  <path d="M15 65 C15 68, 15 70, 15 70 C30 75, 70 75, 85 70 C85 70, 85 68, 85 65 C70 70, 30 70, 15 65" fill="#222222" />
   
   <!-- Hat Strap -->
-  <path d="M25 30 C35 35, 65 35, 75 30" stroke="#3a3a3a" stroke-width="2" fill="none" />
+  <path d="M25 30 C35 35, 65 35, 75 30" stroke="#222222" stroke-width="2" fill="none" />
   
-  <!-- Hat Reflection -->
-  <path d="M30 30 C40 45, 60 45, 70 30" stroke="rgba(255,255,255,0.5)" stroke-width="1" fill="none" />
+  <!-- Hat Details (optional) -->
+  <path d="M30 30 C40 45, 60 45, 70 30" stroke="#cccccc" stroke-width="1" fill="none" />
+  
+  <!-- Hat Outline for better visibility against any background -->
+  <path d="M50 20 C20 20, 15 60, 15 65 C30 65, 70 65, 85 65 C85 60, 80 20, 50 20" stroke="#222222" stroke-width="1" fill="none" />
 </svg>
