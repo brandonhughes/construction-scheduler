@@ -14,8 +14,7 @@ import { useAuth } from './context/AuthContext';
 import { 
   initInactivityTracker, 
   cleanupInactivityTracker, 
-  continueSession as continueSess,
-  forceShowWarning 
+  continueSession as continueSess
 } from './services/inactivity-tracker';
 
 function App() {
@@ -28,19 +27,15 @@ function App() {
   useEffect(() => {
     // Only set up for authenticated users
     if (currentUser) {
-      console.log('Setting up inactivity tracker for authenticated user');
-      
       // Initialize the tracker with callbacks
       initInactivityTracker(
         // Warning callback
         (show, expiryTime) => {
-          console.log(`Warning callback called: show=${show}, expiryTime=${expiryTime}`);
           setShowWarning(show);
           setWarningTime(expiryTime);
         },
         // Logout callback
         () => {
-          console.log('Logout callback triggered');
           logout();
           navigate('/login');
         }
@@ -48,7 +43,6 @@ function App() {
       
       // Clean up when the component unmounts or user logs out
       return () => {
-        console.log('Cleaning up inactivity tracker');
         cleanupInactivityTracker();
       };
     }
@@ -56,14 +50,7 @@ function App() {
   
   // Function to continue the session
   const handleContinueSession = () => {
-    console.log('Continuing session');
     continueSess();
-  };
-  
-  // Function to test the warning dialog
-  const handleTestWarning = () => {
-    console.log('Testing warning dialog');
-    forceShowWarning();
   };
 
   if (loading) {
@@ -103,30 +90,6 @@ function App() {
           onContinue={handleContinueSession}
           onTimeout={() => {}} // Handled by the inactivity tracker
         />
-      )}
-      
-      {/* Debug testing button - only shown when logged in */}
-      {currentUser && (
-        <div style={{ 
-          position: 'fixed', 
-          bottom: '20px', 
-          right: '20px', 
-          zIndex: 1000 
-        }}>
-          <button 
-            onClick={handleTestWarning}
-            style={{
-              padding: '10px 15px',
-              backgroundColor: '#333',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer'
-            }}
-          >
-            Test Timeout Dialog
-          </button>
-        </div>
       )}
     </div>
   );
