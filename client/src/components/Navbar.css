@@ -45,17 +45,4 @@
   color: #f1c6c8; /* Lighter version of Kraus Anderson red */
 }
 
-.btn-logout {
-  background: none;
-  border: 1px solid white;
-  color: white;
-  cursor: pointer;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  transition: all 0.3s;
-}
-
-.btn-logout:hover {
-  background-color: white;
-  color: #c6202e;
-}
+/* Removed btn-logout styles as we're now using navbar-link for logout */

@@ -8,7 +8,8 @@ const Navbar = () => {
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
+  const handleLogout = (e) => {
+    e.preventDefault();
     logout();
     navigate('/login');
   };
@@ -41,9 +42,9 @@ const Navbar = () => {
                 </Link>
               </li>
               <li className="navbar-item">
-                <button onClick={handleLogout} className="btn btn-logout">
+                <a href="#" onClick={handleLogout} className="navbar-link">
                   Logout
-                </button>
+                </a>
               </li>
             </>
           ) : (
