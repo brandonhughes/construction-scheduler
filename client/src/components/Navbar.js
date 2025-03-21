@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import constructionHatLogo from '../assets/images/construction-hat-logo.svg';
+import constructionHatLogo from '../assets/images/ConstructionHat.jpg';
 import './Navbar.css';
 
 const Navbar = () => {
