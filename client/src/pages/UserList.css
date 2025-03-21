@@ -184,3 +184,46 @@
 .btn-outline:hover {
   background-color: #f0f8ff;
 }
+
+/* Icon Buttons */
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: all 0.2s ease;
+  font-size: 18px;
+  padding: 0;
+}
+
+.icon-button:hover {
+  transform: scale(1.1);
+}
+
+.icon-button:focus {
+  outline: none;
+}
+
+.icon-button.edit {
+  color: #0066cc;
+  background-color: rgba(0, 102, 204, 0.1);
+}
+
+.icon-button.edit:hover {
+  background-color: rgba(0, 102, 204, 0.2);
+}
+
+.icon-button.delete {
+  color: #dc3545;
+  background-color: rgba(220, 53, 69, 0.1);
+}
+
+.icon-button.delete:hover {
+  background-color: rgba(220, 53, 69, 0.2);
+}

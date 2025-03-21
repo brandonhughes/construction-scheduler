@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import UserService from '../services/user.service';
+import { FiEdit, FiTrash2 } from 'react-icons/fi';
 import './UserList.css';
 
 const UserList = () => {
@@ -200,16 +201,18 @@ const UserList = () => {
                     </td>
                     <td>
                       <button
-                        className="btn btn-sm"
+                        className="icon-button edit"
                         onClick={() => handleSelectUser(user)}
+                        title="Edit User"
                       >
-                        Edit
+                        <FiEdit />
                       </button>
                       <button
-                        className="btn btn-sm btn-danger"
+                        className="icon-button delete"
                         onClick={() => handleDelete(user.id)}
+                        title="Delete User"
                       >
-                        Delete
+                        <FiTrash2 />
                       </button>
                     </td>
                   </tr>
