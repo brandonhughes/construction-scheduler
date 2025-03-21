@@ -1,0 +1,54 @@
+.timeout-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.timeout-dialog {
+  background-color: white;
+  border-radius: 8px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.timeout-dialog h2 {
+  margin-top: 0;
+  color: #c6202e; /* Match header red color */
+}
+
+.timeout-dialog p {
+  margin: 1rem 0;
+  font-size: 1rem;
+}
+
+.timeout-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.timeout-actions button {
+  min-width: 180px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  background-color: #c6202e; /* Match header red color */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.timeout-actions button:hover {
+  background-color: #9e1a24; /* Darker red */
+}

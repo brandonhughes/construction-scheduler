@@ -1,18 +1,29 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import UserList from './pages/UserList';
 import Profile from './pages/Profile';
+import TimeoutWarning from './components/TimeoutWarning';
 import PrivateRoute from './components/PrivateRoute';
 import NotFound from './pages/NotFound';
 import Unauthorized from './pages/Unauthorized';
 import { useAuth } from './context/AuthContext';
+import { useInactivityTimeout } from './services/timeout.service';
 
 function App() {
-  const { loading } = useAuth();
+  const { loading, currentUser } = useAuth();
+  const navigate = useNavigate();
+
+  // Only activate timeout for authenticated users
+  const {
+    showWarning,
+    warningTime,
+    continueSession,
+    handleLogout
+  } = useInactivityTimeout();
 
   if (loading) {
     return <div className="loading">Loading...</div>;
@@ -42,6 +53,16 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
+      
+      {/* Inactivity timeout warning dialog */}
+      {currentUser && (
+        <TimeoutWarning 
+          show={showWarning}
+          warningTime={warningTime}
+          onContinue={continueSession}
+          onTimeout={handleLogout}
+        />
+      )}
     </div>
   );
 }
