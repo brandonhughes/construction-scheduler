@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Login from './pages/Login';
@@ -11,39 +11,59 @@ import PrivateRoute from './components/PrivateRoute';
 import NotFound from './pages/NotFound';
 import Unauthorized from './pages/Unauthorized';
 import { useAuth } from './context/AuthContext';
-import { useInactivityTimeout } from './services/timeout.service';
+import { 
+  initInactivityTracker, 
+  cleanupInactivityTracker, 
+  continueSession as continueSess,
+  forceShowWarning 
+} from './services/inactivity-tracker';
 
 function App() {
   const { loading, currentUser, logout } = useAuth();
   const navigate = useNavigate();
-  // State for manual testing of timeout warning
-  const [forceShowWarning, setForceShowWarning] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
+  const [warningTime, setWarningTime] = useState(0);
 
-  // Only activate timeout for authenticated users
-  const isAuthenticated = currentUser !== null;
-  const {
-    showWarning: autoShowWarning,
-    warningTime,
-    continueSession,
-    handleLogout
-  } = useInactivityTimeout(isAuthenticated, logout, navigate);
+  // Set up the inactivity tracker when the user logs in
+  useEffect(() => {
+    // Only set up for authenticated users
+    if (currentUser) {
+      console.log('Setting up inactivity tracker for authenticated user');
+      
+      // Initialize the tracker with callbacks
+      initInactivityTracker(
+        // Warning callback
+        (show, expiryTime) => {
+          console.log(`Warning callback called: show=${show}, expiryTime=${expiryTime}`);
+          setShowWarning(show);
+          setWarningTime(expiryTime);
+        },
+        // Logout callback
+        () => {
+          console.log('Logout callback triggered');
+          logout();
+          navigate('/login');
+        }
+      );
+      
+      // Clean up when the component unmounts or user logs out
+      return () => {
+        console.log('Cleaning up inactivity tracker');
+        cleanupInactivityTracker();
+      };
+    }
+  }, [currentUser, logout, navigate]);
   
-  // Combine automatic warning with forced warning for testing
-  const showWarning = autoShowWarning || forceShowWarning;
-  
-  // Debug info
-  console.log('App render - isAuthenticated:', isAuthenticated, 'showWarning:', showWarning);
-  
-  // Function to manually show the warning dialog for testing
-  const showTestWarning = () => {
-    console.log('Manual test: Showing timeout warning');
-    setForceShowWarning(true);
+  // Function to continue the session
+  const handleContinueSession = () => {
+    console.log('Continuing session');
+    continueSess();
   };
   
-  // Function to dismiss the test warning
-  const dismissTestWarning = () => {
-    console.log('Manual test: Dismissing timeout warning');
-    setForceShowWarning(false);
+  // Function to test the warning dialog
+  const handleTestWarning = () => {
+    console.log('Testing warning dialog');
+    forceShowWarning();
   };
 
   if (loading) {
@@ -80,8 +100,8 @@ function App() {
         <TimeoutWarning 
           show={showWarning}
           warningTime={warningTime || (Date.now() + 60000)} // Fallback for manual testing
-          onContinue={forceShowWarning ? dismissTestWarning : continueSession}
-          onTimeout={handleLogout}
+          onContinue={handleContinueSession}
+          onTimeout={() => {}} // Handled by the inactivity tracker
         />
       )}
       
@@ -94,7 +114,7 @@ function App() {
           zIndex: 1000 
         }}>
           <button 
-            onClick={showTestWarning}
+            onClick={handleTestWarning}
             style={{
               padding: '10px 15px',
               backgroundColor: '#333',
