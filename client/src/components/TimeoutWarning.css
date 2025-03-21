@@ -4,11 +4,11 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 9999;
 }
 
 .timeout-dialog {
@@ -51,4 +51,23 @@
 
 .timeout-actions button:hover {
   background-color: #9e1a24; /* Darker red */
+}
+
+.timeout-countdown {
+  font-size: 3rem;
+  font-weight: bold;
+  margin: 1rem 0;
+  color: #c6202e;
+  animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
 }

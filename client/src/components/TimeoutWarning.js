@@ -28,7 +28,9 @@ const TimeoutWarning = ({ show, onContinue, onTimeout, warningTime }) => {
       <div className="timeout-dialog">
         <h2>Session Timeout Warning</h2>
         <p>Your session is about to expire due to inactivity.</p>
-        <p>You will be automatically logged out in <strong>{timeLeft}</strong> seconds.</p>
+        <p>You will be automatically logged out in:</p>
+        <div className="timeout-countdown">{timeLeft}</div>
+        <p>seconds</p>
         <div className="timeout-actions">
           <button 
             className="btn btn-primary"

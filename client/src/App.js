@@ -14,16 +14,17 @@ import { useAuth } from './context/AuthContext';
 import { useInactivityTimeout } from './services/timeout.service';
 
 function App() {
-  const { loading, currentUser } = useAuth();
+  const { loading, currentUser, logout } = useAuth();
   const navigate = useNavigate();
 
   // Only activate timeout for authenticated users
+  const isAuthenticated = currentUser !== null;
   const {
     showWarning,
     warningTime,
     continueSession,
     handleLogout
-  } = useInactivityTimeout();
+  } = useInactivityTimeout(isAuthenticated, logout, navigate);
 
   if (loading) {
     return <div className="loading">Loading...</div>;
