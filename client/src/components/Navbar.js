@@ -29,7 +29,7 @@ const Navbar = () => {
               {(currentUser.role === 'admin' || currentUser.role === 'manager') && (
                 <li className="navbar-item">
                   <Link to="/users" className="navbar-link">
-                    Users
+                    User Management
                   </Link>
                 </li>
               )}

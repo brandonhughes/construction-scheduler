@@ -6,13 +6,17 @@ const UserList = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [selectedUser, setSelectedUser] = useState(null);
+  const [isAddingUser, setIsAddingUser] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
     role: 'user',
     active: true,
+    password: '',
+    confirmPassword: '',
   });
 
   useEffect(() => {
@@ -33,6 +37,7 @@ const UserList = () => {
   };
 
   const handleSelectUser = (user) => {
+    setIsAddingUser(false);
     setSelectedUser(user);
     setFormData({
       firstName: user.firstName,
@@ -40,6 +45,22 @@ const UserList = () => {
       email: user.email,
       role: user.role,
       active: user.active,
+      password: '',
+      confirmPassword: '',
+    });
+  };
+
+  const handleAddNewUser = () => {
+    setSelectedUser(null);
+    setIsAddingUser(true);
+    setFormData({
+      firstName: '',
+      lastName: '',
+      email: '',
+      role: 'user',
+      active: true,
+      password: '',
+      confirmPassword: '',
     });
   };
 
@@ -51,17 +72,57 @@ const UserList = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleUpdateUser = async (e) => {
     e.preventDefault();
     if (!selectedUser) return;
 
     try {
-      await UserService.updateUser(selectedUser.id, formData);
+      await UserService.updateUser(selectedUser.id, {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        role: formData.role,
+        active: formData.active,
+      });
       setError('');
+      setSuccess('User updated successfully');
       await fetchUsers();
       setSelectedUser(null);
+      
+      setTimeout(() => {
+        setSuccess('');
+      }, 3000);
     } catch (err) {
       setError('Failed to update user: ' + (err.message || 'Unknown error'));
+    }
+  };
+
+  const handleCreateUser = async (e) => {
+    e.preventDefault();
+    
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords don't match");
+      return;
+    }
+    
+    try {
+      await UserService.createUser({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role,
+      });
+      setError('');
+      setSuccess('User created successfully');
+      await fetchUsers();
+      setIsAddingUser(false);
+      
+      setTimeout(() => {
+        setSuccess('');
+      }, 3000);
+    } catch (err) {
+      setError('Failed to create user: ' + (err.message || 'Unknown error'));
     }
   };
 
@@ -71,13 +132,24 @@ const UserList = () => {
     try {
       await UserService.deleteUser(userId);
       setError('');
+      setSuccess('User deleted successfully');
       await fetchUsers();
       if (selectedUser && selectedUser.id === userId) {
         setSelectedUser(null);
       }
+      
+      setTimeout(() => {
+        setSuccess('');
+      }, 3000);
     } catch (err) {
       setError('Failed to delete user: ' + (err.message || 'Unknown error'));
     }
+  };
+
+  const handleCancel = () => {
+    setSelectedUser(null);
+    setIsAddingUser(false);
+    setError('');
   };
 
   return (
@@ -85,6 +157,17 @@ const UserList = () => {
       <h2>User Management</h2>
       
       {error && <div className="alert alert-danger">{error}</div>}
+      {success && <div className="alert alert-success">{success}</div>}
+      
+      <div className="user-list-header">
+        <button 
+          className="btn btn-primary" 
+          onClick={handleAddNewUser}
+          disabled={isAddingUser}
+        >
+          Add New User
+        </button>
+      </div>
       
       <div className="user-list-content">
         <div className="user-list">
@@ -139,7 +222,7 @@ const UserList = () => {
         {selectedUser && (
           <div className="user-edit">
             <h3>Edit User</h3>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleUpdateUser}>
               <div className="form-group">
                 <label htmlFor="firstName">First Name</label>
                 <input
@@ -210,7 +293,101 @@ const UserList = () => {
                 <button
                   type="button"
                   className="btn btn-outline"
-                  onClick={() => setSelectedUser(null)}
+                  onClick={handleCancel}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+        
+        {isAddingUser && (
+          <div className="user-edit">
+            <h3>Add New User</h3>
+            <form onSubmit={handleCreateUser}>
+              <div className="form-group">
+                <label htmlFor="firstName">First Name</label>
+                <input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  className="form-control"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="lastName">Last Name</label>
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  className="form-control"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  className="form-control"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  className="form-control"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="confirmPassword">Confirm Password</label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  className="form-control"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="role">Role</label>
+                <select
+                  id="role"
+                  name="role"
+                  className="form-control"
+                  value={formData.role}
+                  onChange={handleChange}
+                >
+                  <option value="user">User</option>
+                  <option value="manager">Manager</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+              <div className="form-buttons">
+                <button type="submit" className="btn">
+                  Create User
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-outline"
+                  onClick={handleCancel}
                 >
                   Cancel
                 </button>
